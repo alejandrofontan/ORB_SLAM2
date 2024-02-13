@@ -43,7 +43,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     cout << "Input sensor was set to: ";
 
     if(mSensor==MONOCULAR)
-        cout << "Monocular" << endl;
+        cout << "mono" << endl;
     else if(mSensor==STEREO)
         cout << "Stereo" << endl;
     else if(mSensor==RGBD)
@@ -219,7 +219,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 {
     if(mSensor!=MONOCULAR)
     {
-        cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular." << endl;
+        cerr << "ERROR: you called TrackMonocular but input sensor was not set to mono." << endl;
         exit(-1);
     }
 

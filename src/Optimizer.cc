@@ -282,7 +282,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
         MapPoint* pMP = pFrame->mvpMapPoints[i];
         if(pMP)
         {
-            // Monocular observation
+            // mono observation
             if(pFrame->mvuRight[i]<0)
             {
                 nInitialCorrespondences++;
@@ -590,7 +590,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame *pKF, bool* pbStopFlag, Map* pMap
             {                
                 const cv::KeyPoint &kpUn = pKFi->mvKeysUn[mit->second];
 
-                // Monocular observation
+                // mono observation
                 if(pKFi->mvuRight[mit->second]<0)
                 {
                     Eigen::Matrix<double,2,1> obs;

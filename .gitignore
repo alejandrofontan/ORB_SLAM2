@@ -1,7 +1,7 @@
 CMakeLists.txt.user
-Examples/Monocular/mono_euroc
-Examples/Monocular/mono_kitti
-Examples/Monocular/mono_tum
+Examples/mono/mono_euroc
+Examples/mono/mono_kitti
+Examples/mono/mono_tum
 Examples/RGB-D/rgbd_tum
 Examples/ROS/ORB_SLAM2/CMakeLists.txt.user
 Examples/ROS/ORB_SLAM2/Mono
