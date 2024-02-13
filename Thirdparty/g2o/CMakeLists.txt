@@ -3,6 +3,22 @@ SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
 PROJECT(g2o)
 
+# Libraries
+set(LIBRARIES_LOCAL_PATH "/home/fontan/Libraries")
+set(EIGEN_LOCAL_VERSION "3.4.0")
+set(EIGEN_LOCAL_PATH "${LIBRARIES_LOCAL_PATH}/eigen-${EIGEN_LOCAL_VERSION}/install")
+
+# Check C++17
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
+if(COMPILER_SUPPORTS_CXX17)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+  add_definitions(-DCOMPILEDWITHC17)
+  message(STATUS "Using flag -std=c++17.")
+else()
+  message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
+endif()
+
 SET(g2o_C_FLAGS)
 SET(g2o_CXX_FLAGS)
 
@@ -67,7 +83,7 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${g2o_C_FLAGS}")
 
 # Find Eigen3
 SET(EIGEN3_INCLUDE_DIR ${G2O_EIGEN3_INCLUDE})
-FIND_PACKAGE(Eigen3 3.1.0 REQUIRED)
+find_package(Eigen3 ${EIGEN_LOCAL_VERSION} REQUIRED HINTS ${EIGEN_LOCAL_PATH})
 IF(EIGEN3_FOUND)
   SET(G2O_EIGEN3_INCLUDE ${EIGEN3_INCLUDE_DIR} CACHE PATH "Directory of Eigen3")
 ELSE(EIGEN3_FOUND)
