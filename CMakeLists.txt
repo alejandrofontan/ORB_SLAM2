@@ -9,35 +9,35 @@ MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3 -march=native")
+# Libraries
+set(LOCAL_PATH "/home/fontan")
+set(LIBRARIES_LOCAL_PATH "${LOCAL_PATH}/Libraries")
 
-# Check C++11 or C++0x support
+set(OPENCV_LOCAL_VERSION "4.x")
+set(EIGEN_LOCAL_VERSION "3.4.0")
+set(PANGOLIN_LOCAL_VERSION "0.8")
+
+set(OPENCV_LOCAL_PATH "${LIBRARIES_LOCAL_PATH}/opencv/install")
+set(EIGEN_LOCAL_PATH "${LIBRARIES_LOCAL_PATH}/eigen-${EIGEN_LOCAL_VERSION}/install")
+set(PANGOLIN_LOCAL_PATH "${LIBRARIES_LOCAL_PATH}/Pangolin")
+
+# Check C++17
 include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-   add_definitions(-DCOMPILEDWITHC11)
-   message(STATUS "Using flag -std=c++11.")
-elseif(COMPILER_SUPPORTS_CXX0X)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-   add_definitions(-DCOMPILEDWITHC0X)
-   message(STATUS "Using flag -std=c++0x.")
+CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
+if(COMPILER_SUPPORTS_CXX17)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+   add_definitions(-DCOMPILEDWITHC17)
+   message(STATUS "Using flag -std=c++17.")
 else()
-   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
 endif()
+
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-find_package(OpenCV 3.0 QUIET)
-if(NOT OpenCV_FOUND)
-   find_package(OpenCV 2.4.3 QUIET)
-   if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
-   endif()
-endif()
-
-find_package(Eigen3 3.1.0 REQUIRED)
-find_package(Pangolin REQUIRED)
+find_package(OpenCV REQUIRED HINTS ${OPENCV_LOCAL_PATH})
+find_package(Eigen3 ${EIGEN_LOCAL_VERSION} REQUIRED HINTS ${EIGEN_LOCAL_PATH})
+find_package(Pangolin ${PANGOLIN_LOCAL_VERSION} REQUIRED HINTS ${PANGOLIN_LOCAL_PATH})
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
