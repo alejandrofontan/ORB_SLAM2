@@ -33,6 +33,7 @@ namespace ORB_SLAM2{
 }
 
 void LoadImages(const string &pathToSequence, vector<string> &imageFilenames, vector<ORB_SLAM2::Seconds> &timestamps);
+std::string paddingZeros(const std::string& number, const size_t numberOfZeros = 5);
 
 int main(int argc, char **argv)
 {
@@ -47,7 +48,6 @@ int main(int argc, char **argv)
 
     string path_to_settings = string(argv[2]);
     string path_to_sequence = string(argv[3]);
-    //path_to_settings = path_to_sequence + "/calibration.yaml";
 
     string path_to_output = string(argv[4]);
     string experimentIndex = string(argv[5]);
@@ -101,11 +101,6 @@ int main(int argc, char **argv)
             usleep((T-ttrack)  * 1e6);
 
 #endif
-        //std::chrono::steady_clock::time_point t_exp_end = std::chrono::steady_clock::now();
-        //ORB_SLAM2::Seconds texp_duration = std::chrono::duration_cast<std::chrono::duration<ORB_SLAM2::Seconds> >(t_exp_end - t_exp_init).count();
-
-        //if(texp_duration > 5.0 * 60.0)
-            //break;
     }
 
     // Stop all threads
@@ -123,8 +118,8 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    //string resultsPath_expId = path_to_output + "/" + ORB_SLAM2::paddingZeros(experimentIndex);
-    //SLAM.SaveKeyFrameTrajectoryTUM(resultsPath_expId + "_" + "KeyFrameTrajectory.txt");
+    string resultsPath_expId = path_to_output + "/" + paddingZeros(experimentIndex);
+    SLAM.SaveKeyFrameTrajectoryTUM(resultsPath_expId + "_" + "KeyFrameTrajectory.txt");
     //SLAM.SaveStatistics(resultsPath_expId + "_" + "statistics");
 
     return 0;
@@ -155,4 +150,11 @@ void LoadImages(const string &pathToSequence, vector<string> &imageFilenames, ve
             imageFilenames.push_back(pathToSequence + "/" +  sRGB);
         }
     }
+}
+
+std::string paddingZeros(const std::string& number, const size_t numberOfZeros){
+    std::string zeros{};
+    for(size_t iZero{}; iZero < numberOfZeros - number.size(); ++iZero)
+        zeros += "0";
+    return (zeros + number);
 }
