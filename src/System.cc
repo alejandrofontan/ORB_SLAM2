@@ -217,6 +217,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
 cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
 {
+    std::chrono::steady_clock::time_point t_start = std::chrono::steady_clock::now();
     if(mSensor!=MONOCULAR)
     {
         cerr << "ERROR: you called TrackMonocular but input sensor was not set to mono." << endl;
@@ -263,6 +264,10 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
+
+    std::chrono::steady_clock::time_point t_end = std::chrono::steady_clock::now();
+    double ttrack = std::chrono::duration_cast<std::chrono::duration<double> >(t_end - t_start).count();
+    trackingTime.push_back(ttrack);
 
     return Tcw;
 }
@@ -487,6 +492,47 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
 {
     unique_lock<mutex> lock(mMutexState);
     return mTrackedKeyPointsUn;
+}
+
+void System::SaveStatistics(const std::string &filename){
+    auto keyframes = mpMap->GetAllKeyFrames();
+    auto pts = mpMap->GetAllMapPoints();
+
+    size_t numKeyframes{0};
+    for (auto& keyframe: keyframes) {
+        if(keyframe->isBad())
+            continue;
+        numKeyframes++;
+    }
+
+    size_t numPts{0};
+    size_t numObservations{0};
+    for (auto& pt: pts) {
+        if(pt->isBad())
+            continue;
+        numPts++;
+        numObservations += pt->Observations();
+    }
+    float numObservationsPerPt = float(numObservations)/float(numPts);
+
+    float medianTrackingTime{};
+    sort(trackingTime.begin(),trackingTime.end());
+    medianTrackingTime = (float) trackingTime[trackingTime.size()/2];
+
+    float medianLocalMapppingTime{};
+    sort(mpLocalMapper->localMappingTime.begin(),mpLocalMapper->localMappingTime.end());
+    medianLocalMapppingTime = (float) mpLocalMapper->localMappingTime[mpLocalMapper->localMappingTime.size()/2];
+
+    ofstream f;
+    string statisticsFile = filename + ".txt";
+    f.open(statisticsFile.c_str());
+    f << fixed;
+    f << setprecision(0) << numKeyframes << " " << numPts << " " << numObservations << " " << setprecision(3) << numObservationsPerPt  <<
+    " " << setprecision(9) << medianTrackingTime << " " << medianLocalMapppingTime << " " << mpLoopCloser->numOfLoopClosures << endl;
+
+      //<< ORBmatcher::TH_HIGH  << " " << ORBmatcher::TH_LOW << " " << chi2_2dof << " " << distParam(0) << " " << distParam(1) <<
+      //" " << timeConsumption_localMapping_median << " " << timeConsumption_tracking_median << " " << mpTracker->numTrackedFrames
+      //<< " " << mpLoopCloser->numLoopClosures << endl;
 }
 
 } //namespace ORB_SLAM

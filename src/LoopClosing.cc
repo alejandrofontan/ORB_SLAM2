@@ -72,6 +72,7 @@ void LoopClosing::Run()
                {
                    // Perform loop fusion and pose graph optimization
                    CorrectLoop();
+                   ++numOfLoopClosures;
                }
             }
         }       

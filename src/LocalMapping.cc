@@ -57,6 +57,8 @@ void LocalMapping::Run()
         // Check if there are keyframes in the queue
         if(CheckNewKeyFrames())
         {
+            std::chrono::steady_clock::time_point t_start = std::chrono::steady_clock::now();
+
             // BoW conversion and insertion in Map
             ProcessNewKeyFrame();
 
@@ -85,6 +87,10 @@ void LocalMapping::Run()
             }
 
             mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
+
+            std::chrono::steady_clock::time_point t_end = std::chrono::steady_clock::now();
+            double ttrack = std::chrono::duration_cast<std::chrono::duration<double> >(t_end - t_start).count();
+            localMappingTime.push_back(ttrack);
         }
         else if(Stop())
         {

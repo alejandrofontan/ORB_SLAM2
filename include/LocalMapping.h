@@ -121,6 +121,10 @@ protected:
 
     bool mbAcceptKeyFrames;
     std::mutex mMutexAccept;
+
+public:
+    vector<double> localMappingTime{};
+
 };
 
 } //namespace ORB_SLAM

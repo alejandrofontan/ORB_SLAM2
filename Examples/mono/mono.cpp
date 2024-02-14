@@ -120,7 +120,7 @@ int main(int argc, char **argv)
     // Save camera trajectory
     string resultsPath_expId = path_to_output + "/" + paddingZeros(experimentIndex);
     SLAM.SaveKeyFrameTrajectoryTUM(resultsPath_expId + "_" + "KeyFrameTrajectory.txt");
-    //SLAM.SaveStatistics(resultsPath_expId + "_" + "statistics");
+    SLAM.SaveStatistics(resultsPath_expId + "_" + "statistics");
 
     return 0;
 }

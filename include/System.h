@@ -123,6 +123,9 @@ public:
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
+    void SaveStatistics(const std::string &filename);
+    vector<double> trackingTime{};
+
 private:
 
     // Input sensor
