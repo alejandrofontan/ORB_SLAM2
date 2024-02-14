@@ -528,7 +528,8 @@ void System::SaveStatistics(const std::string &filename){
     f.open(statisticsFile.c_str());
     f << fixed;
     f << setprecision(0) << numKeyframes << " " << numPts << " " << numObservations << " " << setprecision(3) << numObservationsPerPt  <<
-    " " << setprecision(9) << medianTrackingTime << " " << medianLocalMapppingTime << " " << mpLoopCloser->numOfLoopClosures << endl;
+    " " << setprecision(9) << medianTrackingTime << " " << medianLocalMapppingTime <<
+    " " << mpTracker->numTrackedFrames <<" " << mpLoopCloser->numOfLoopClosures << endl;
 
       //<< ORBmatcher::TH_HIGH  << " " << ORBmatcher::TH_LOW << " " << chi2_2dof << " " << distParam(0) << " " << distParam(1) <<
       //" " << timeConsumption_localMapping_median << " " << timeConsumption_tracking_median << " " << mpTracker->numTrackedFrames

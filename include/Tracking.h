@@ -214,6 +214,10 @@ protected:
     bool mbRGB;
 
     list<MapPoint*> mlpTemporalPoints;
+
+public:
+    int numTrackedFrames{2};
+
 };
 
 } //namespace ORB_SLAM

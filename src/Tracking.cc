@@ -420,6 +420,8 @@ void Tracking::Track()
         // If tracking were good, check if we insert a keyframe
         if(bOK)
         {
+            ++numTrackedFrames;
+
             // Update motion model
             if(!mLastFrame.mTcw.empty())
             {
