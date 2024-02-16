@@ -523,17 +523,39 @@ void System::SaveStatistics(const std::string &filename){
     sort(mpLocalMapper->localMappingTime.begin(),mpLocalMapper->localMappingTime.end());
     medianLocalMapppingTime = (float) mpLocalMapper->localMappingTime[mpLocalMapper->localMappingTime.size()/2];
 
+    float medianLoopClosingTime{};
+    if(mpLoopCloser->loopClosingTime.empty()){
+        medianLoopClosingTime = 0.0;
+    }
+    else{
+        sort(mpLoopCloser->loopClosingTime.begin(),mpLoopCloser->loopClosingTime.end());
+        medianLoopClosingTime = (float)mpLoopCloser->loopClosingTime[mpLoopCloser->loopClosingTime.size()/2];
+    }
+
+    long long finalVirtualMemUsed{virtualMemUsed.back()};
+    long long finalPhysMemUsed{physMemUsed.back()};
+    long long firstVirtualMemUsed{virtualMemUsed.front()};
+    long long firstPhysMemUsed{physMemUsed.front()};
+    long long maxVirtualMemUsed{0};
+    long long maxPhysMemUsed{0};
+    for(const auto& mem : virtualMemUsed)
+        if (mem > maxVirtualMemUsed)
+            maxVirtualMemUsed = mem;
+    for(const auto& mem : physMemUsed)
+        if (mem > maxPhysMemUsed)
+            maxPhysMemUsed = mem;
+
     ofstream f;
     string statisticsFile = filename + ".txt";
     f.open(statisticsFile.c_str());
     f << fixed;
     f << setprecision(0) << numKeyframes << " " << numPts << " " << numObservations << " " << setprecision(3) << numObservationsPerPt  <<
-    " " << setprecision(9) << medianTrackingTime << " " << medianLocalMapppingTime <<
-    " " << mpTracker->numTrackedFrames <<" " << mpLoopCloser->numOfLoopClosures << endl;
+    " " << setprecision(9) << medianTrackingTime << " " << medianLocalMapppingTime << " " << medianLoopClosingTime <<
+    " " << mpTracker->numTrackedFrames <<" " << mpLoopCloser->numOfLoopClosures << setprecision(0) <<
+    " " << firstVirtualMemUsed <<" " << maxVirtualMemUsed << " " << finalVirtualMemUsed <<
+    " " << firstPhysMemUsed << " " << maxPhysMemUsed <<" " << finalPhysMemUsed <<
+    endl;
 
-      //<< ORBmatcher::TH_HIGH  << " " << ORBmatcher::TH_LOW << " " << chi2_2dof << " " << distParam(0) << " " << distParam(1) <<
-      //" " << timeConsumption_localMapping_median << " " << timeConsumption_tracking_median << " " << mpTracker->numTrackedFrames
-      //<< " " << mpLoopCloser->numLoopClosures << endl;
 }
 
 } //namespace ORB_SLAM

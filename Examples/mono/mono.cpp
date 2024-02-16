@@ -25,8 +25,10 @@
 #include<chrono>
 #include<opencv2/core/core.hpp>
 
-#include<System.h>
+#include "sys/types.h"
+#include "sys/sysinfo.h"
 
+#include<System.h>
 using namespace std;
 namespace ORB_SLAM2{
     using Seconds = double;
@@ -37,6 +39,16 @@ std::string paddingZeros(const std::string& number, const size_t numberOfZeros =
 
 int main(int argc, char **argv)
 {
+    struct sysinfo memInfo;
+    sysinfo (&memInfo);
+
+    long long virtualMemUsed0 = memInfo.totalram - memInfo.freeram;
+    virtualMemUsed0 += memInfo.totalswap - memInfo.freeswap;
+    virtualMemUsed0 *= memInfo.mem_unit;
+
+    long long physMemUsed0 = memInfo.totalram - memInfo.freeram;
+    physMemUsed0 *= memInfo.mem_unit;
+
     if(argc != 7)
     {
         cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence path_to_output experimentIndex activateVisualization" << endl;
@@ -73,6 +85,15 @@ int main(int argc, char **argv)
     cout << "Start processing sequence ..." << endl;
     cout << "Images in the sequence: " << nImages << endl << endl;
 
+    sysinfo (&memInfo);
+    long long virtualMemUsed = memInfo.totalram - memInfo.freeram;
+    virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
+    virtualMemUsed *= memInfo.mem_unit;
+    long long physMemUsed = memInfo.totalram - memInfo.freeram;
+    physMemUsed *= memInfo.mem_unit;
+    SLAM.virtualMemUsed.push_back(virtualMemUsed - virtualMemUsed0);
+    SLAM.physMemUsed.push_back(physMemUsed - physMemUsed0);
+
     // Main loop
     cv::Mat im;
     for(size_t ni = 0; ni < nImages; ni++)
@@ -96,11 +117,17 @@ int main(int argc, char **argv)
         else if(ni > 0)
             T = tframe - timestamps[ni-1];
 
-#ifndef COMPILED_SEQUENTIAL
         if(ttrack < T)
             usleep((T-ttrack)  * 1e6);
 
-#endif
+        sysinfo (&memInfo);
+        virtualMemUsed = memInfo.totalram - memInfo.freeram;
+        virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
+        virtualMemUsed *= memInfo.mem_unit;
+        physMemUsed = memInfo.totalram - memInfo.freeram;
+        physMemUsed *= memInfo.mem_unit;
+        SLAM.virtualMemUsed.push_back(virtualMemUsed - virtualMemUsed0);
+        SLAM.physMemUsed.push_back(physMemUsed - physMemUsed0);
     }
 
     // Stop all threads

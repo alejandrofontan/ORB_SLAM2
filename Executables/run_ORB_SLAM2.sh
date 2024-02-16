@@ -8,7 +8,7 @@ echo "    system = ${system}"
 
 # Constants
 mode="mono" # Mode: mono / (rgbd) / (stereo) / (visualInertial)
-numRuns="1"	
+numRuns="20"	
 activeVisualization="1"
 vocabulary_file="ORBvoc.txt"
 

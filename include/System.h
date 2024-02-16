@@ -178,6 +178,11 @@ private:
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
     std::mutex mMutexState;
+
+public:
+    std::vector<long long> virtualMemUsed{};
+    std::vector<long long> physMemUsed{};
+
 };
 
 }// namespace ORB_SLAM

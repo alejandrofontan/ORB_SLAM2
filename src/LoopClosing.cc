@@ -71,8 +71,12 @@ void LoopClosing::Run()
                if(ComputeSim3())
                {
                    // Perform loop fusion and pose graph optimization
+                   std::chrono::steady_clock::time_point t_start = std::chrono::steady_clock::now();
                    CorrectLoop();
                    ++numOfLoopClosures;
+                   std::chrono::steady_clock::time_point t_end = std::chrono::steady_clock::now();
+                   double ttrack = std::chrono::duration_cast<std::chrono::duration<double> >(t_end - t_start).count();
+                   loopClosingTime.push_back(ttrack);
                }
             }
         }       
