@@ -1,6 +1,6 @@
 # Variables
 system="ORB_SLAM2_VANILLA"
-experiment_name="test2"
+experiment_name="test"
 experiment_folder="/home/fontan/resultsOrbslam2/vanillaOrbslam2"
 
 echo "Experiment ${experiment_name}"
@@ -8,7 +8,7 @@ echo "    system = ${system}"
 
 # Constants
 mode="mono" # Mode: mono / (rgbd) / (stereo) / (visualInertial)
-numRuns="30"	
+numRuns="50"	
 activeVisualization="1"
 vocabulary_file="ORBvoc.txt"
 
@@ -64,7 +64,7 @@ do
   		mkdir -p ${path_to_output}
 	fi
 	
-	#./run_ORB_SLAM2_sequence.sh ${mode} ${numRuns} ${ws_path} ${sequence_name} ${dataset_name} ${settings_file} ${vocabulary_file} ${path_to_output} ${datasets_path} ${activeVisualization} ${system}
-	./evaluate_ORB_SLAM2_sequence.sh "ate" ${path_to_output} ${groundtruth_file} "0.033" " ${ws_path}/${system}"
+	./run_ORB_SLAM2_sequence.sh ${mode} ${numRuns} ${ws_path} ${sequence_name} ${dataset_name} ${settings_file} ${vocabulary_file} ${path_to_output} ${datasets_path} ${activeVisualization} ${system}
+	#./evaluate_ORB_SLAM2_sequence.sh "ate" ${path_to_output} ${groundtruth_file} "0.033" " ${ws_path}/${system}"
 	seqIndex=${seqIndex}+1
 done
