@@ -45,10 +45,10 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
         mImageHeight = 480;
     }
 
-    mViewpointX = fSettings["Viewer.ViewpointX"];
-    mViewpointY = fSettings["Viewer.ViewpointY"];
-    mViewpointZ = fSettings["Viewer.ViewpointZ"];
-    mViewpointF = fSettings["Viewer.ViewpointF"];
+    mViewpointX = 0;// fSettings["Viewer.ViewpointX"];
+    mViewpointY = -0.7;//fSettings["Viewer.ViewpointY"];
+    mViewpointZ = -1.8;//fSettings["Viewer.ViewpointZ"];
+    mViewpointF = 500;//fSettings["Viewer.ViewpointF"];
 }
 
 void Viewer::Run()

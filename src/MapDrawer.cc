@@ -32,12 +32,12 @@ MapDrawer::MapDrawer(Map* pMap, const string &strSettingPath):mpMap(pMap)
 {
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 
-    mKeyFrameSize = fSettings["Viewer.KeyFrameSize"];
-    mKeyFrameLineWidth = fSettings["Viewer.KeyFrameLineWidth"];
-    mGraphLineWidth = fSettings["Viewer.GraphLineWidth"];
-    mPointSize = fSettings["Viewer.PointSize"];
-    mCameraSize = fSettings["Viewer.CameraSize"];
-    mCameraLineWidth = fSettings["Viewer.CameraLineWidth"];
+    mKeyFrameSize = 0.05;//fSettings["Viewer.KeyFrameSize"];
+    mKeyFrameLineWidth = 1;//fSettings["Viewer.KeyFrameLineWidth"];
+    mGraphLineWidth = 0.9;//fSettings["Viewer.GraphLineWidth"];
+    mPointSize = 2;//fSettings["Viewer.PointSize"];
+    mCameraSize = 0.08;//fSettings["Viewer.CameraSize"];
+    mCameraLineWidth = 3;//fSettings["Viewer.CameraLineWidth"];
 
 }
 

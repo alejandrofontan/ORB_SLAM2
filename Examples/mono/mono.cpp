@@ -49,21 +49,42 @@ int main(int argc, char **argv)
     long long physMemUsed0 = memInfo.totalram - memInfo.freeram;
     physMemUsed0 *= memInfo.mem_unit;
 
-    if(argc != 7)
+    if(argc < 6)
     {
-        cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence path_to_output experimentIndex activateVisualization" << endl;
+        // cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence path_to_output experimentIndex activateVisualization" << endl; // VANILLA
+        cerr << endl << "Usage: ./mono_tum path_to_sequence path_to_output path_to_vocabulary_folder experimentIndex activateVisualization" << endl;
         return 1;
     }
 
+    //string path_to_sequence = string(argv[1]);
+    //string path_to_settings = path_to_sequence + "/calibration.yaml";
+    //string path_to_output = string(argv[2]);
+    string path_to_vocabulary_folder = string(argv[3]);
+
+    //string experimentIndex = string(argv[4]);
+    //bool activateVisualization = bool(std::stoi(string(argv[5])));
+    //KeypointType keypointType = KeypointType(std::stoi(string(argv[6])));
+    //DescriptorType descriptorType = DescriptorType(std::stoi(string(argv[7])));
+
     // ORB_SLAM2 PLUS inputs
-    string path_to_vocabulary = string(argv[1]);
 
-    string path_to_settings = string(argv[2]);
-    string path_to_sequence = string(argv[3]);
+    //string path_to_sequence = string(argv[3]); // VANILLA
+    string path_to_sequence = string(argv[1]);
 
-    string path_to_output = string(argv[4]);
-    string experimentIndex = string(argv[5]);
-    bool activateVisualization = bool(std::stoi(string(argv[6])));
+    //string path_to_vocabulary = string(argv[1]); // VANILLA
+    string path_to_vocabulary =  path_to_vocabulary_folder + "/ORBvoc.txt";
+
+    //string path_to_settings = string(argv[2]); // VANILLA
+    string path_to_settings = path_to_sequence + "/calibration.yaml";
+
+    // string path_to_output = string(argv[4]); // VANILLA
+    string path_to_output = string(argv[2]);
+
+    // string experimentIndex = string(argv[5]); // VANILLA
+    string experimentIndex = string(argv[4]);
+
+    // bool activateVisualization = bool(std::stoi(string(argv[6])));  // VANILLA
+    bool activateVisualization = bool(std::stoi(string(argv[5])));
 
     // Retrieve paths to images
     vector<string> imageFilenames{};

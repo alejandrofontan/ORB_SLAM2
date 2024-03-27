@@ -99,9 +99,10 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
     cout << "- p2: " << DistCoef.at<float>(3) << endl;
     cout << "- fps: " << fps << endl;
 
-
-    int nRGB = fSettings["Camera.RGB"];
-    mbRGB = nRGB;
+    if (!fSettings["Camera.RGB"].empty())
+        mbRGB = bool(int(fSettings["Camera.RGB"]));
+    //int nRGB = fSettings["Camera.RGB"]; // VANILLA
+    //mbRGB = nRGB; // VANILLA
 
     if(mbRGB)
         cout << "- color order: RGB (ignored if grayscale)" << endl;
@@ -110,11 +111,15 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
 
     // Load ORB parameters
 
-    int nFeatures = fSettings["ORBextractor.nFeatures"];
-    float fScaleFactor = fSettings["ORBextractor.scaleFactor"];
-    int nLevels = fSettings["ORBextractor.nLevels"];
-    int fIniThFAST = fSettings["ORBextractor.iniThFAST"];
-    int fMinThFAST = fSettings["ORBextractor.minThFAST"];
+    //int nFeatures = fSettings["ORBextractor.nFeatures"];
+    int w = fSettings["Camera.w"];
+    int h = fSettings["Camera.h"];
+    const int numFeatures0 = 1000;
+    int nFeatures = ((2000.0 - 1000.0)/ (1241.0 * 376.0 - 640.0 * 480.0)) * (float(w * h) - 640.0 * 480.0) + numFeatures0;
+    float fScaleFactor = 1.2f; // fSettings["ORBextractor.scaleFactor"];
+    int nLevels = 8;// fSettings["ORBextractor.nLevels"];
+    int fIniThFAST = 20; //fSettings["ORBextractor.iniThFAST"];
+    int fMinThFAST = 7; //fSettings["ORBextractor.minThFAST"];
 
     mpORBextractorLeft = new ORBextractor(nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
 
