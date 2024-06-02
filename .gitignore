@@ -1,4 +1,5 @@
 CMakeLists.txt.user
+Examples/mono/mono
 Examples/mono/mono_euroc
 Examples/mono/mono_kitti
 Examples/mono/mono_tum
