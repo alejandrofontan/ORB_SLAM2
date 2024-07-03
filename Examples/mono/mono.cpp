@@ -37,6 +37,13 @@ namespace ORB_SLAM2{
 void LoadImages(const string &pathToSequence, vector<string> &imageFilenames, vector<ORB_SLAM2::Seconds> &timestamps);
 std::string paddingZeros(const std::string& number, const size_t numberOfZeros = 5);
 
+void removeSubstring(std::string& str, const std::string& substring) {
+    size_t pos;
+    while ((pos = str.find(substring)) != std::string::npos) {
+        str.erase(pos, substring.length());
+    }
+}
+
 int main(int argc, char **argv)
 {
     struct sysinfo memInfo;
@@ -49,42 +56,48 @@ int main(int argc, char **argv)
     long long physMemUsed0 = memInfo.totalram - memInfo.freeram;
     physMemUsed0 *= memInfo.mem_unit;
 
-    if(argc < 6)
-    {
-        // cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence path_to_output experimentIndex activateVisualization" << endl; // VANILLA
-        cerr << endl << "Usage: ./mono_tum path_to_sequence path_to_output path_to_vocabulary_folder experimentIndex activateVisualization" << endl;
-        return 1;
+    // ORB_SLAM2 PLUS inputs
+    bool activateVisualization{true};
+    string path_to_vocabulary;
+    string path_to_sequence;
+    string path_to_output;
+    string experimentIndex{"0"};
+    for (int i = 0; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg.find("Vis:") != std::string::npos) {
+            removeSubstring(arg, "Vis:");
+            activateVisualization = bool(std::stoi(arg));
+            std::cout << "Activate Visualization = " << activateVisualization << std::endl;
+            continue;
+        }
+        if (arg.find("Voc:") != std::string::npos) {
+            removeSubstring(arg, "Voc:");
+            string path_to_vocabulary_folder = arg;
+            path_to_vocabulary =  path_to_vocabulary_folder + "/ORBvoc.txt";
+            std::cout << "Path to vocabulary = " << path_to_vocabulary << std::endl;
+            continue;
+        }
+        if (arg.find("sequence_path:") != std::string::npos) {
+            removeSubstring(arg, "sequence_path:");
+            path_to_sequence =  arg;
+            std::cout << "Path to sequence = " << path_to_sequence << std::endl;
+            continue;
+        }
+        if (arg.find("exp_folder:") != std::string::npos) {
+            removeSubstring(arg, "exp_folder:");
+            path_to_output =  arg;
+            std::cout << "Path to output = " << path_to_output << std::endl;
+            continue;
+        }
+        if (arg.find("exp_id:") != std::string::npos) {
+            removeSubstring(arg, "exp_id:");
+            experimentIndex =  arg;
+            std::cout << "Exp id = " << experimentIndex << std::endl;
+            continue;
+        }
     }
 
-    //string path_to_sequence = string(argv[1]);
-    //string path_to_settings = path_to_sequence + "/calibration.yaml";
-    //string path_to_output = string(argv[2]);
-    string path_to_vocabulary_folder = string(argv[3]);
-
-    //string experimentIndex = string(argv[4]);
-    //bool activateVisualization = bool(std::stoi(string(argv[5])));
-    //KeypointType keypointType = KeypointType(std::stoi(string(argv[6])));
-    //DescriptorType descriptorType = DescriptorType(std::stoi(string(argv[7])));
-
-    // ORB_SLAM2 PLUS inputs
-
-    //string path_to_sequence = string(argv[3]); // VANILLA
-    string path_to_sequence = string(argv[1]);
-
-    //string path_to_vocabulary = string(argv[1]); // VANILLA
-    string path_to_vocabulary =  path_to_vocabulary_folder + "/ORBvoc.txt";
-
-    //string path_to_settings = string(argv[2]); // VANILLA
     string path_to_settings = path_to_sequence + "/calibration.yaml";
-
-    // string path_to_output = string(argv[4]); // VANILLA
-    string path_to_output = string(argv[2]);
-
-    // string experimentIndex = string(argv[5]); // VANILLA
-    string experimentIndex = string(argv[4]);
-
-    // bool activateVisualization = bool(std::stoi(string(argv[6])));  // VANILLA
-    bool activateVisualization = bool(std::stoi(string(argv[5])));
 
     // Retrieve paths to images
     vector<string> imageFilenames{};
