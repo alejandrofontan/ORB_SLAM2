@@ -25,6 +25,7 @@ dependencies:
   - xorg-libx11 
   - xorg-libxfixes
   - opencv
-  - eigen 
+  - eigen
+  - yaml-cpp
   - fontan::pangolin
   

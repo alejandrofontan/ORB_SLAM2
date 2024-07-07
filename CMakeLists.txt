@@ -38,6 +38,7 @@ LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 find_package(OpenCV REQUIRED HINTS ${OPENCV_LOCAL_PATH})
 find_package(Eigen3 ${EIGEN_LOCAL_VERSION} REQUIRED HINTS ${EIGEN_LOCAL_PATH})
 find_package(Pangolin ${PANGOLIN_LOCAL_VERSION} REQUIRED HINTS ${PANGOLIN_LOCAL_PATH})
+find_package(yaml-cpp REQUIRED)
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
@@ -73,6 +74,7 @@ src/Viewer.cc
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
+${YAML_CPP_LIBRARIES}
 ${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so

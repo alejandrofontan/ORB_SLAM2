@@ -25,6 +25,7 @@
 #include <thread>
 #include <pangolin/pangolin.h>
 #include <iomanip>
+#include <yaml-cpp/yaml.h>
 
 namespace ORB_SLAM2
 {
@@ -555,6 +556,32 @@ void System::SaveStatistics(const std::string &filename){
     " " << firstVirtualMemUsed <<" " << maxVirtualMemUsed << " " << finalVirtualMemUsed <<
     " " << firstPhysMemUsed << " " << maxPhysMemUsed <<" " << finalPhysMemUsed <<
     endl;
+
+    // Create statistics yaml file
+    string statisticsFile_yaml = filename + ".yaml";
+    YAML::Node node;
+
+    node["graph"]["numKeyframes"] = numKeyframes;
+    node["graph"]["numPts"] = numPts;
+    node["graph"]["numObservations"] = numObservations;
+    node["graph"]["numObservationsPerPt"] = numObservationsPerPt;
+
+    node["profiling"]["medianTrackingTime"] = medianTrackingTime;
+    node["profiling"]["medianLocalMapppingTime"] = medianLocalMapppingTime;
+    node["profiling"]["medianLoopClosingTime"] = medianLoopClosingTime;
+
+    node["recall"]["numTrackedFrames"] = mpTracker->numTrackedFrames;
+    node["recall"]["loopCloser->numOfLoopClosures"] = mpLoopCloser->numOfLoopClosures;
+
+    node["memory"]["firstVirtualMemUsed"] = firstVirtualMemUsed;
+    node["memory"]["maxVirtualMemUsed"] = maxVirtualMemUsed;
+    node["memory"]["finalVirtualMemUsed"] = finalVirtualMemUsed;
+
+    std::ofstream fout(statisticsFile_yaml);
+
+    fout << node;
+    fout.close();
+    std::cout << statisticsFile_yaml + " file written successfully!" << std::endl;
 
 }
 
