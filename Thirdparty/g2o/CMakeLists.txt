@@ -1,35 +1,18 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
-PROJECT(g2o)
+project(g2o)
 
-# Libraries
-set(LIBRARIES_LOCAL_PATH "/home/fontan/Libraries")
-set(EIGEN_LOCAL_VERSION "3.4.0")
-set(EIGEN_LOCAL_PATH "${LIBRARIES_LOCAL_PATH}/eigen-${EIGEN_LOCAL_VERSION}/install")
-
-# Check C++17
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-if(COMPILER_SUPPORTS_CXX17)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-  add_definitions(-DCOMPILEDWITHC17)
-  message(STATUS "Using flag -std=c++17.")
-else()
-  message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
-endif()
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3 -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -march=native")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 SET(g2o_C_FLAGS)
 SET(g2o_CXX_FLAGS)
 
-# default built type
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Release)
-ENDIF()
-
-MESSAGE(STATUS "BUILD TYPE:" ${CMAKE_BUILD_TYPE})
-
-SET (G2O_LIB_TYPE SHARED)
 
 # There seems to be an issue with MSVC8
 # see http://eigen.tuxfamily.org/bz/show_bug.cgi?id=83
@@ -48,26 +31,11 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${g2o_LIBRARY_OUTPUT_DIRECTORY})
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${g2o_LIBRARY_OUTPUT_DIRECTORY})
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${g2o_RUNTIME_OUTPUT_DIRECTORY})
 
-# Set search directory for looking for our custom CMake scripts to
-# look for SuiteSparse, QGLViewer, and Eigen3.
-LIST(APPEND CMAKE_MODULE_PATH ${g2o_SOURCE_DIR}/cmake_modules)
-
 # Detect OS and define macros appropriately
 IF(UNIX)
   ADD_DEFINITIONS(-DUNIX)
   MESSAGE(STATUS "Compiling on Unix")
 ENDIF(UNIX)
-
-# Eigen library parallelise itself, though, presumably due to performance issues
-# OPENMP is experimental. We experienced some slowdown with it
-FIND_PACKAGE(OpenMP)
-SET(G2O_USE_OPENMP OFF CACHE BOOL "Build g2o with OpenMP support (EXPERIMENTAL)")
-IF(OPENMP_FOUND AND G2O_USE_OPENMP)
-  SET (G2O_OPENMP 1)
-  SET(g2o_C_FLAGS "${g2o_C_FLAGS} ${OpenMP_C_FLAGS}")
-  SET(g2o_CXX_FLAGS "${g2o_CXX_FLAGS} -DEIGEN_DONT_PARALLELIZE ${OpenMP_CXX_FLAGS}")
-  MESSAGE(STATUS "Compiling with OpenMP support")
-ENDIF(OPENMP_FOUND AND G2O_USE_OPENMP)
 
 # Compiler specific options for gcc
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native") 
@@ -83,7 +51,7 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${g2o_C_FLAGS}")
 
 # Find Eigen3
 SET(EIGEN3_INCLUDE_DIR ${G2O_EIGEN3_INCLUDE})
-find_package(Eigen3 ${EIGEN_LOCAL_VERSION} REQUIRED HINTS ${EIGEN_LOCAL_PATH})
+find_package(Eigen3  REQUIRED NO_MODULE)
 IF(EIGEN3_FOUND)
   SET(G2O_EIGEN3_INCLUDE ${EIGEN3_INCLUDE_DIR} CACHE PATH "Directory of Eigen3")
 ELSE(EIGEN3_FOUND)
@@ -102,7 +70,7 @@ ${g2o_SOURCE_DIR}/stuff
 ${G2O_EIGEN3_INCLUDE})
 
 # Include the subdirectories
-ADD_LIBRARY(g2o ${G2O_LIB_TYPE}
+ADD_LIBRARY(g2o SHARED
 #types
 g2o/types/types_sba.h
 g2o/types/types_six_dof_expmap.h

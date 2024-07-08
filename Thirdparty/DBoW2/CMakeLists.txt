@@ -1,28 +1,14 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.16)
 project(DBoW2)
 
-set(LOCAL_PATH "/home/fontan")
-set(LIBRARIES_LOCAL_PATH "${LOCAL_PATH}/Libraries")
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3 -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -march=native")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-set(OPENCV_LOCAL_VERSION "4.x")
-set(OPENCV_LOCAL_PATH "${LIBRARIES_LOCAL_PATH}/opencv/install")
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
-
-# Check C++17
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-if(COMPILER_SUPPORTS_CXX17)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-   add_definitions(-DCOMPILEDWITHC17)
-   message(STATUS "Using flag -std=c++17.")
-else()
-   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
-endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
+add_compile_options(-Wextra -Wpedantic)
 
 set(HDRS_DBOW2
   DBoW2/BowVector.h
@@ -44,12 +30,24 @@ set(SRCS_DUTILS
   DUtils/Random.cpp
   DUtils/Timestamp.cpp)
 
-find_package(OpenCV REQUIRED HINTS ${OPENCV_LOCAL_PATH})
-include_directories(${OpenCV_INCLUDE_DIRS})
+find_package(OpenCV REQUIRED)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+add_library(${PROJECT_NAME} SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
 
-include_directories(${OpenCV_INCLUDE_DIRS})
-add_library(DBoW2 SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
-target_link_libraries(DBoW2 ${OpenCV_LIBS})
+target_include_directories(${PROJECT_NAME} PUBLIC 
+	include/DBoW2/ 
+	include/
+)
 
+target_link_libraries(${PROJECT_NAME}
+	${OpenCV_LIBRARIES}
+	${brisk_LIBRARIES}
+	${akaze_LIBRARIES}
+	${SiftGPU_LIBRARIES}
+)
+
+configure_file(DBoW2/DBoW2.cmake.in
+  "${PROJECT_BINARY_DIR}/DBoW2Config.cmake" @ONLY)
+
+install(FILES "${PROJECT_BINARY_DIR}/DBoW2Config.cmake" 
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/DBoW2/)  
