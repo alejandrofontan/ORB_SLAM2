@@ -1,11 +1,10 @@
 name: orbslam2
 channels:
   - conda-forge
-  - defaults
   - fontan
 dependencies:
   - cxx-compiler
-  - gcc
+  - c-compiler
   - ninja
   - cmake
   - pkg-config
@@ -28,4 +27,3 @@ dependencies:
   - eigen
   - yaml-cpp
   - fontan::pangolin
-  
