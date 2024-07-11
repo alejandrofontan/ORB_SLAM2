@@ -28,7 +28,7 @@ mamba activate orbslam2
 ```
 Build ORB-SLAM2:
 ```
-python build.py
+./build.sh
 ```
 
 
