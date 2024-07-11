@@ -45,12 +45,12 @@ if [ "$force_build" = true ]; then
 fi
 
 if [ "$verbose" = true ]; then
-	echo "[ORB-SLAM2][build.sh] Compile DBoW2 (output disabled) ... "   
+	echo "[ORB-SLAM2][build.sh] Compile DBoW2 ... "   
 	cmake -G Ninja -B $build_folder -S $source_folder -DCMAKE_PREFIX_PATH=$source_folder -DCMAKE_INSTALL_PREFIX=$source_folder 
 	cmake --build $build_folder --config Release 
 	ninja install -C $build_folder
 else
-        echo "[ORB-SLAM2][build.sh] Compile DBoW2 ... "   
+        echo "[ORB-SLAM2][build.sh] Compile DBoW2 (output disabled) ... "   
 	cmake -G Ninja -B $build_folder -S $source_folder -DCMAKE_PREFIX_PATH=$source_folder -DCMAKE_INSTALL_PREFIX=$source_folder > /dev/null 2>&1
 	cmake --build $build_folder --config Release > /dev/null 2>&1
 	ninja install -C $build_folder > /dev/null 2>&1
@@ -67,11 +67,11 @@ if [ "$force_build" = true ]; then
 fi
 
 if [ "$verbose" = true ]; then
-        echo "[ORB-SLAM2][build.sh] Compile g2o (output disabled) ... "   
+        echo "[ORB-SLAM2][build.sh] Compile g2o ... "   
 	cmake -G Ninja -B $build_folder -S $source_folder -DCMAKE_PREFIX_PATH=$source_folder -DCMAKE_INSTALL_PREFIX=$source_folder 
 	cmake --build $build_folder --config Release 
 else
-        echo "[ORB-SLAM2][build.sh] Compile g2o ... "   
+        echo "[ORB-SLAM2][build.sh] Compile g2o (output disabled) ... "   
 	cmake -G Ninja -B $build_folder -S $source_folder -DCMAKE_PREFIX_PATH=$source_folder -DCMAKE_INSTALL_PREFIX=$source_folder > /dev/null 2>&1
 	cmake --build $build_folder --config Release > /dev/null 2>&1
 fi
@@ -87,11 +87,11 @@ if [ "$force_build" = true ]; then
 fi
 
 if [ "$verbose" = true ]; then
-        echo "[ORB-SLAM2][build.sh] Compile ORB-SLAM2 (output disabled) ... "  
+        echo "[ORB-SLAM2][build.sh] Compile ORB-SLAM2 ... "  
 	cmake -G Ninja -B $build_folder -S $source_folder -DCMAKE_PREFIX_PATH=$source_folder -DCMAKE_INSTALL_PREFIX=$source_folder 
 	cmake --build $build_folder --config Release 
 else    
-	echo "[ORB-SLAM2][build.sh] Compile ORB-SLAM2 ..."   
+	echo "[ORB-SLAM2][build.sh] Compile ORB-SLAM2 (output disabled) ..."   
 	cmake -G Ninja -B $build_folder -S $source_folder -DCMAKE_PREFIX_PATH=$source_folder -DCMAKE_INSTALL_PREFIX=$source_folder > /dev/null 2>&1
 	cmake --build $build_folder --config Release > /dev/null 2>&1
 fi
